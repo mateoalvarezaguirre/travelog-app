@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '@modules/home/ui/screens/HomeScreen';
 import TravelDetailScreen from '@modules/travel/application/ui/screens/TravelDetailScreen';
 import AddTripScreen from "@modules/travel/application/ui/screens/AddTripScreen";
+import EditTripScreen from "@modules/travel/application/ui/screens/EditTripScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -12,6 +13,7 @@ export default function HomeStack() {
             <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home' }} />
             <Stack.Screen name="TravelDetail" component={TravelDetailScreen} options={{ title: 'Detalle' }} />
             <Stack.Screen name="AddTrip" component={AddTripScreen} options={{ title: 'Nuevo Viaje' }} />
+            <Stack.Screen name="EditTrip" component={EditTripScreen} options={{ title: 'Editar Viaje' }} />
         </Stack.Navigator>
     );
 }

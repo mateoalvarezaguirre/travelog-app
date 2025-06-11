@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
     View,
     Text,
@@ -7,23 +7,25 @@ import {
     FlatList,
     TouchableOpacity,
     Image,
-    ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useTravelStorage } from '@shared/hooks/useTravelStorage';
 import TravelogLoader from '@shared/ui/TravelogLoader';
 import { formatDate } from '@shared/utils/formatDate';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable"
+import Reanimated, {
+    SharedValue,
+    useAnimatedStyle,
+} from 'react-native-reanimated';
 
-export default function HomeScreen() {
+
+export default async function HomeScreen() {
     const navigation = useNavigation<any>();
-    const { trips, loading, loadTrips } = useTravelStorage();
+    const { trips, loading, loadTrips, removeTrip } = useTravelStorage();
     const [query, setQuery] = useState('');
-
-    useFocusEffect(
-        useCallback(() => {
-            loadTrips();
-        }, [])
-    );
+    
+    await loadTrips();
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -33,6 +35,29 @@ export default function HomeScreen() {
                 t.location.toLowerCase().includes(q)
         );
     }, [trips, query]);
+
+    const handleRightAction = (prog: SharedValue<number>, drag: SharedValue<number>, tripId: string) => {
+        const styleAnimation = useAnimatedStyle(() => {
+            return {
+                transform: [{ translateX: drag.value + 90 }],
+            };
+        });
+
+        return (
+            <Reanimated.View style={styleAnimation}>
+                <TouchableOpacity
+                    style={styles.deleteBtn}
+                    onPress={() => handleDelete(tripId)}
+                >
+                    <Text style={styles.deleteTxt}>Eliminar</Text>
+                </TouchableOpacity>
+            </Reanimated.View>
+        );
+    }
+
+    const handleDelete = async (id: string) => {
+        await removeTrip(id);
+    }
 
     if (loading) {
         return <TravelogLoader message="Cargando tus viajes…" />;
@@ -51,26 +76,34 @@ export default function HomeScreen() {
 
             <FlatList
                 data={filtered}
+                refreshing={loading}
+                onRefresh={loadTrips}
                 keyExtractor={(item, index) => item.id ?? index.toString()}
                 contentContainerStyle={styles.list}
                 ListEmptyComponent={
                     <Text style={styles.empty}>No hay viajes que coincidan</Text>
                 }
                 renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.card}
-                        onPress={() =>
-                            navigation.navigate('TravelDetail', { travel: item })
-                        }
-                    >
-                        <Image source={{ uri: item.photos[0] }} style={styles.image} />
-                        <View style={styles.cardContent}>
-                            <Text style={styles.cardTitle}>{item.title}</Text>
-                            <Text style={styles.cardSubtitle}>
-                                {item.location} · {formatDate(item.dateStart)}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
+                    <GestureHandlerRootView>
+                        <ReanimatedSwipeable
+                            renderRightActions={(prog, drag) => handleRightAction(prog, drag, item.id ?? '')}
+                        >
+                            <TouchableOpacity
+                                style={styles.card}
+                                onPress={() =>
+                                    navigation.navigate('TravelDetail', { travel: item })
+                                }
+                            >
+                                <Image source={{ uri: item.photos[0] }} style={styles.image} />
+                                <View style={styles.cardContent}>
+                                    <Text style={styles.cardTitle}>{item.title}</Text>
+                                    <Text style={styles.cardSubtitle}>
+                                        {item.location} · {formatDate(item.dateStart)}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </ReanimatedSwipeable>
+                    </GestureHandlerRootView>
                 )}
             />
             <TouchableOpacity
@@ -112,6 +145,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         elevation: 2,
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        zIndex: 1
     },
     image: {
         width: '100%',
@@ -152,5 +186,20 @@ const styles = StyleSheet.create({
         fontSize: 32,
         color: '#FFF',
         lineHeight: 32,
+    },
+    deleteBtn: {
+        backgroundColor: '#FF6B6B',
+        width: 100,
+        height: 226,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomRightRadius: 16,
+        borderTopRightRadius: 16,
+        zIndex: 2,
+    },
+    deleteTxt: {
+        color: '#FFF',
+        fontWeight: '600',
+        fontSize: 16,
     },
 });

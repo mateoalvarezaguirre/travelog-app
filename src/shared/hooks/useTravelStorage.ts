@@ -15,7 +15,6 @@ export function useTravelStorage() {
         loadTrips().then();
     }, []);
 
-
     const loadTrips = async () => {
         try {
             setLoading(true);
@@ -71,11 +70,30 @@ export function useTravelStorage() {
         setLoading(false);
     }
 
+    const getTrip = async (tripId: string): Promise<TravelEntry | undefined> => {
+        return trips.find(trip => trip.id === tripId);
+    };
+
+    const updateTrip = async (updatedTrip: TravelEntry) => {
+        setLoading(true);
+
+        await delay(1000);
+
+        const updated = trips.map(trip => 
+            trip.id === updatedTrip.id ? updatedTrip : trip
+        );
+        await saveTrips(updated);
+
+        setLoading(false);
+    };
+
     return {
         loadTrips,
         trips,
         addTrip,
         removeTrip,
+        getTrip,
+        updateTrip,
         loading,
     };
 }

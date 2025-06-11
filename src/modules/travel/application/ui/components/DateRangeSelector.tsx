@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 
 export default function DateRangeSelector({
-                                              onRangeSelected,
-                                          }: {
+    onRangeSelected,
+    initialStartDate,
+    initialEndDate,
+}: {
     onRangeSelected: (start: string, end: string) => void;
+    initialStartDate?: string | null;
+    initialEndDate?: string | null;
 }) {
-    const [startDate, setStartDate] = useState<string | null>(null);
-    const [endDate, setEndDate] = useState<string | null>(null);
+    const [startDate, setStartDate] = useState<string | null>(initialStartDate || null);
+    const [endDate, setEndDate] = useState<string | null>(initialEndDate || null);
     const [showCalendar, setShowCalendar] = useState(false);
+
+    useEffect(() => {
+        if (initialStartDate && initialEndDate) {
+            onRangeSelected(initialStartDate, initialEndDate);
+        }
+    }, []);
 
     const handleDayPress = (day: any) => {
         if (!startDate || (startDate && endDate)) {
@@ -53,7 +63,7 @@ export default function DateRangeSelector({
             <Button
                 title={startDate && endDate ? 'Cambiar fechas' : 'Seleccionar fechas'}
                 onPress={() => setShowCalendar(!showCalendar)}
-            ></Button>
+            />
 
             {showCalendar && (
                 <Calendar
@@ -70,7 +80,7 @@ export default function DateRangeSelector({
 const styles = StyleSheet.create({
     container: { marginBottom: 20 },
     calendar: {
-        borderRadius: '16px'
+        borderRadius: 16,
     },
     selectedText: {
         marginTop: 10,

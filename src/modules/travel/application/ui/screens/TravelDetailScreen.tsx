@@ -55,7 +55,7 @@ export default function TravelDetailScreen() {
                 {/* Botón de acción */}
                 <TouchableOpacity
                     style={styles.actionButton}
-                    onPress={() => {/* tu lógica aquí */}}
+                    onPress={() => navigation.navigate('EditTrip', { trip: travel })}
                 >
                     <Text style={styles.actionText}>Editar Viaje</Text>
                 </TouchableOpacity>

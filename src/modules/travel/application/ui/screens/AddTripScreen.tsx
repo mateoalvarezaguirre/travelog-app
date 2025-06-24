@@ -13,6 +13,8 @@ import * as ImagePicker from 'expo-image-picker';
 import DateRangeSelector from '@modules/travel/application/ui/components/DateRangeSelector';
 import { useTravelStorage } from "@shared/hooks/useTravelStorage";
 import {useNavigation} from "@react-navigation/native";
+import {TravelEntry} from "@modules/travel/domain/Types/TravelEntry";
+import UuidGenerator from "@shared/utils/uuidGenerator";
 
 export default function AddTripScreen() {
     const [title, setTitle] = useState('');
@@ -51,13 +53,15 @@ export default function AddTripScreen() {
         const photos = [imageUri];
 
         // Aquí podrías llamar a un caso de uso o API real
-        const newTrip = {
+        const newTrip: TravelEntry = {
+            id: UuidGenerator.generate(),
             title,
             location,
             description,
-            photos,
+            coverPicture: imageUri,
             dateStart: startDate,
             dateEnd: endDate,
+            content: [],
             tags: []
         };
 
@@ -126,7 +130,7 @@ export default function AddTripScreen() {
             </View>
 
             <View style={styles.field}>
-                <Text style={styles.label}>Imagen</Text>
+                <Text style={styles.label}>Portada</Text>
                 <TouchableOpacity style={styles.uploadBtn} onPress={pickImage}>
                     <Text style={styles.uploadText}>
                         {imageUri ? 'Cambiar imagen' : 'Seleccionar imagen'}
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
     },
     saveBtn: {
-        backgroundColor: '#2F80ED',
+        backgroundColor: '#101010',
         borderRadius: 12,
         paddingVertical: 16,
         alignItems: 'center',

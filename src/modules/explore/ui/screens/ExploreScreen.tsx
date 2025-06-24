@@ -74,7 +74,7 @@ export default function ExploreScreen() {
                         style={styles.card}
                         onPress={() => navigation.navigate('TravelDetail', { travel: item })}
                     >
-                        <Image source={{ uri: item.photos[0] }} style={styles.image} />
+                        <Image source={{ uri: item.coverPicture }} style={styles.image} />
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.subtitle}>{item.location}</Text>
                     </TouchableOpacity>

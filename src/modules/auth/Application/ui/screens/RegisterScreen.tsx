@@ -75,13 +75,13 @@ const styles = StyleSheet.create({
         padding: 12, marginBottom: 12,
     },
     button: {
-        backgroundColor: '#2F80ED', borderRadius: 12,
+        backgroundColor: '#101010', borderRadius: 12,
         paddingVertical: 14, alignItems: 'center', marginTop: 8,
     },
     buttonText: { color: '#FFF', fontSize: 16, fontWeight: '600' },
     link: {
         marginTop: 16, textAlign: 'center',
-        color: '#2F80ED', textDecorationLine: 'underline',
+        color: '#101010', textDecorationLine: 'underline',
     },
     error: { color: '#D32F2F', marginBottom: 8, textAlign: 'center' },
 });

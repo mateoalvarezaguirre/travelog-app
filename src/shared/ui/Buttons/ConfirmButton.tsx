@@ -27,7 +27,7 @@ export default ConfirmButton;
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#2F80ED',
+        backgroundColor: '#101010',
         borderRadius: 12,
         paddingVertical: 14, alignItems: 'center', marginTop: 8,
     },

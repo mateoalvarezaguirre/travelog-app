@@ -20,12 +20,14 @@ import Reanimated, {
 } from 'react-native-reanimated';
 
 
-export default async function HomeScreen() {
+export default function HomeScreen() {
     const navigation = useNavigation<any>();
     const { trips, loading, loadTrips, removeTrip } = useTravelStorage();
     const [query, setQuery] = useState('');
-    
-    await loadTrips();
+
+    useEffect(() => {
+        loadTrips().then();
+    }, []);
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -94,7 +96,7 @@ export default async function HomeScreen() {
                                     navigation.navigate('TravelDetail', { travel: item })
                                 }
                             >
-                                <Image source={{ uri: item.photos[0] }} style={styles.image} />
+                                <Image source={{ uri: item.coverPicture }} style={styles.image} />
                                 <View style={styles.cardContent}>
                                     <Text style={styles.cardTitle}>{item.title}</Text>
                                     <Text style={styles.cardSubtitle}>
@@ -177,7 +179,7 @@ const styles = StyleSheet.create({
         width: 56,
         height: 56,
         borderRadius: 28,
-        backgroundColor: '#2F80ED',
+        backgroundColor: '#101010',
         justifyContent: 'center',
         alignItems: 'center',
         elevation: 5,

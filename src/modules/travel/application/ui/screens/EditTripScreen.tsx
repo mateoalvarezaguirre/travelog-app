@@ -22,7 +22,7 @@ export default function EditTripScreen() {
     const [title, setTitle] = useState('');
     const [location, setLocation] = useState('');
     const [description, setDescription] = useState('');
-    const [imageUri, setImageUri] = useState<string | null>(null);
+    const [coverImage, setCoverImage] = useState<string | null>(null);
     const [startDate, setStartDate] = useState<string | null>(null);
     const [endDate, setEndDate] = useState<string | null>(null);
 
@@ -36,7 +36,7 @@ export default function EditTripScreen() {
             setTitle(trip.title);
                     setLocation(trip.location);
                     setDescription(trip.description);
-                    setImageUri(trip.photos[0]);
+                    setCoverImage(trip.coverPicture);
                     setStartDate(trip.dateStart);
                     setEndDate(trip.dateEnd);
         };
@@ -50,7 +50,7 @@ export default function EditTripScreen() {
         });
 
         if (!result.canceled) {
-            setImageUri(result.assets[0].uri);
+            setCoverImage(result.assets[0].uri);
         }
     };
 
@@ -60,14 +60,19 @@ export default function EditTripScreen() {
 
             const updateService = new UpdateTripService();
 
-            const photos = [imageUri ?? trip.photos[0]];
-
             const updatedTrip: TravelEntry = {
                 id: trip.id,
                 title,
                 location,
                 description,
-                photos,
+                coverPicture: coverImage ?? trip.coverPicture,
+                content: [
+                    {
+                        type: 'note',
+                        text: 'description',
+                        date: '2024-10-01',
+                    },
+                ],
                 dateStart: startDate ?? trip.dateStart,
                 dateEnd: endDate ?? trip.dateEnd,
                 tags: []
@@ -161,10 +166,10 @@ export default function EditTripScreen() {
                 <Text style={styles.label}>Imagen</Text>
                 <TouchableOpacity style={styles.uploadBtn} onPress={pickImage}>
                     <Text style={styles.uploadText}>
-                        {imageUri ? 'Cambiar imagen' : 'Seleccionar imagen'}
+                        {coverImage ? 'Cambiar imagen' : 'Seleccionar imagen'}
                     </Text>
                 </TouchableOpacity>
-                {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+                {coverImage && <Image source={{ uri: coverImage }} style={styles.image} />}
             </View>
             <ConfirmButton onConfirm={handleSubmit} confirmText={'Guardar cambios'} disabled={loading} />
         </ScrollView>
@@ -219,7 +224,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
     },
     saveBtn: {
-        backgroundColor: '#2F80ED',
+        backgroundColor: '#101010',
         borderRadius: 12,
         paddingVertical: 16,
         alignItems: 'center',

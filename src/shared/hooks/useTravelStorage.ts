@@ -4,6 +4,9 @@ import {TravelEntry} from "@modules/travel/domain/Types/TravelEntry";
 import {mockTravelData} from "@modules/travel/infrastructure/mockTravelData";
 import {delay} from "@shared/utils/delay";
 import UuidGenerator from "@shared/utils/uuidGenerator";
+import {PhotoContent} from "@modules/travel/domain/Types/PhotoContent";
+import {VideoContent} from "@modules/travel/domain/Types/VideoContent";
+import {NoteContent} from "@modules/travel/domain/Types/NoteContent";
 
 const STORAGE_KEY = 'travelog.trips';
 
@@ -87,6 +90,25 @@ export function useTravelStorage() {
         setLoading(false);
     };
 
+    const addContentToTrip = async (tripId: string, content: PhotoContent|VideoContent|NoteContent) => {
+        setLoading(true);
+
+        await delay(1000);
+
+        const updatedTrips = trips.map(trip => {
+            if (trip.id === tripId) {
+                return {
+                    ...trip,
+                    content: [...trip.content, content]
+                };
+            }
+            return trip;
+        });
+
+        await saveTrips(updatedTrips);
+        setLoading(false);
+    }
+
     return {
         loadTrips,
         trips,
@@ -95,5 +117,6 @@ export function useTravelStorage() {
         getTrip,
         updateTrip,
         loading,
+        addContentToTrip
     };
 }

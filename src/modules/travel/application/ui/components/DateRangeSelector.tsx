@@ -39,7 +39,7 @@ export default function DateRangeSelector({
         const marked: any = {};
 
         if (startDate) {
-            marked[startDate] = { startingDay: true, color: '#2F80ED', textColor: '#fff' };
+            marked[startDate] = { startingDay: true, color: '#101010', textColor: '#fff' };
         }
 
         if (startDate && endDate) {
@@ -49,10 +49,10 @@ export default function DateRangeSelector({
 
             for (let i = 1; i < range; i++) {
                 const day = start.clone().add(i, 'days').format('YYYY-MM-DD');
-                marked[day] = { color: '#D6E4FF', textColor: '#2F80ED' };
+                marked[day] = { color: '#D6E4FF', textColor: '#101010' };
             }
 
-            marked[endDate] = { endingDay: true, color: '#2F80ED', textColor: '#fff' };
+            marked[endDate] = { endingDay: true, color: '#101010', textColor: '#fff' };
         }
 
         return marked;

@@ -4,11 +4,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@modules/*": ["src/modules/*"],
-      "@shared/*": ["src/shared/*"],
-      "@assets/*": ["assets/*"],
-      "@context/*": ["src/context/*"],
+      "@/*": ["src/*"]
     }
   },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "assets/**/*.json"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "app/**/*.ts", "app/**/*.tsx", "assets/**/*.json"]
 }

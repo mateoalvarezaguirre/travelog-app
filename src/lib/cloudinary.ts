@@ -22,7 +22,6 @@ export async function uploadToCloudinary(uri: string): Promise<{ url: string; pu
     {
       method: "POST",
       body: formData,
-      headers: { "Content-Type": "multipart/form-data" },
     }
   )
 

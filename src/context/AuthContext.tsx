@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useCallback } from 'react'
 import * as SecureStore from 'expo-secure-store'
 import { getMe } from '@/lib/api/auth'
 import { loginWithCredentials, loginWithGoogle, registerUser } from '@/lib/api/auth'
+import { registerUnauthorizedCallback, clearUnauthorizedCallback } from '@/lib/api/client'
 import type { User } from '@/types'
 
 interface AuthContextType {
@@ -10,7 +11,7 @@ interface AuthContextType {
   isLoading: boolean
   signIn: (email: string, password: string) => Promise<void>
   signInWithGoogle: (idToken: string) => Promise<void>
-  register: (data: { name: string; email: string; password: string; password_confirmation: string }) => Promise<void>
+  register: (data: { name: string; username: string; email: string; password: string; password_confirmation: string }) => Promise<void>
   signOut: () => Promise<void>
 }
 
@@ -31,6 +32,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     loadStoredAuth()
+  }, [])
+
+  // Register global 401 handler — clears auth so AuthGuard redirects to login
+  useEffect(() => {
+    registerUnauthorizedCallback(async () => {
+      await SecureStore.deleteItemAsync('accessToken')
+      setAccessToken(null)
+      setUser(null)
+    })
+    return () => clearUnauthorizedCallback()
   }, [])
 
   const loadStoredAuth = async () => {
@@ -64,6 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = useCallback(async (data: {
     name: string
+    username: string
     email: string
     password: string
     password_confirmation: string

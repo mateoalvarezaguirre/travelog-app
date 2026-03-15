@@ -13,12 +13,12 @@
 | 1 | Project setup, routing, theme, UI library | ✅ Complete |
 | 2 | Auth context + auth screens | ✅ Complete |
 | 3 | Data layer (types, API, hooks, validations) | ✅ Complete |
-| 4 | Tab navigation + Journals screens | 🔄 In progress |
-| 5 | Explore screen | ❌ Pending |
-| 6 | Map screen | ❌ Pending |
-| 7 | Profile screen | ❌ Pending |
-| 8 | Missing components + polish | ❌ Pending |
-| 9 | Google OAuth | ❌ Pending |
+| 4 | Tab navigation + Journals screens | ✅ Complete |
+| 5 | Explore screen | ✅ Complete |
+| 6 | Map screen | ✅ Complete |
+| 7 | Profile screen | ✅ Complete |
+| 8 | Missing components + polish | ✅ Complete |
+| 9 | Google OAuth | ✅ Complete |
 
 ---
 
@@ -152,7 +152,7 @@
 
 ---
 
-## Phase 6 — Map Screen ❌
+## Phase 6 — Map Screen ✅
 
 ### Prerequisites
 - [ ] Add Google Maps API key in `app.json`:
@@ -181,7 +181,7 @@
 
 ---
 
-## Phase 7 — Profile Screen ❌
+## Phase 7 — Profile Screen ✅
 
 ### 7.1 `app/(tabs)/profile/index.tsx`
 - [ ] Cover photo (full width, 150px)
@@ -207,7 +207,7 @@
 
 ---
 
-## Phase 8 — Missing Components + Polish ❌
+## Phase 8 — Missing Components + Polish ✅
 
 ### Components
 - [ ] `src/components/ImageUpload.tsx`:
@@ -238,7 +238,7 @@
 
 ---
 
-## Phase 9 — Google OAuth ❌
+## Phase 9 — Google OAuth ✅
 
 - [ ] Install `expo-auth-session` + `expo-web-browser`
 - [ ] Configure Google OAuth client IDs (iOS, Android, Web) in app.json / `.env`
@@ -280,7 +280,7 @@ app/
     ├── explore/
     │   └── index.tsx              ❌ Phase 5
     ├── map/
-    │   └── index.tsx              ❌ Phase 6
+    │   └── index.tsx              ✅ Phase 6
     └── profile/
         ├── index.tsx              ❌ Phase 7.1
         ├── edit.tsx               ❌ Phase 7.2

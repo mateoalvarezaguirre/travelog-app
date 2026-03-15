@@ -31,7 +31,11 @@
           "apiKey": ""
         }
       },
-      "package": "com.travelog.app"
+      "package": "com.travelog.app",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -41,12 +45,25 @@
       "expo-router",
       "expo-font",
       "expo-secure-store",
+      "expo-web-browser",
       [
         "expo-location",
         {
           "locationWhenInUsePermission": "Travelog necesita acceso a tu ubicación para mostrar tu posición en el mapa."
         }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.867762241543-g1iqunbh6f0c66ho7i52rdm2t6c225ls"
+        }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "be790eb0-addb-448c-a098-7f98e9867835"
+      }
+    }
   }
 }

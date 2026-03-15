@@ -14,6 +14,10 @@ import { ApiClientError } from '@/lib/api/client'
 
 const registerSchema = z.object({
   name: z.string().min(1, 'El nombre es obligatorio'),
+  username: z.string()
+    .min(3, 'El usuario debe tener al menos 3 caracteres')
+    .max(20, 'El usuario no puede superar los 20 caracteres')
+    .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guión bajo'),
   email: z.string().min(1, 'El email es obligatorio').email('Email inválido'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
   password_confirmation: z.string().min(1, 'Confirma tu contraseña'),
@@ -44,7 +48,7 @@ export default function RegisterScreen() {
 
   const { control, handleSubmit, watch, formState: { errors } } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: '', email: '', password: '', password_confirmation: '' },
+    defaultValues: { name: '', username: '', email: '', password: '', password_confirmation: '' },
   })
 
   const password = watch('password')
@@ -99,6 +103,23 @@ export default function RegisterScreen() {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   error={errors.name?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="username"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Nombre de usuario"
+                  placeholder="ej: juan_viajero"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  error={errors.username?.message}
                 />
               )}
             />

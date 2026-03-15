@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin'
 import Toast from 'react-native-toast-message'
 import { useAuth } from '@/hooks/use-auth'
 import { Card } from '@/components/ui/Card'
@@ -21,9 +22,30 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 export default function LoginScreen() {
-  const { signIn } = useAuth()
+  const { signIn, signInWithGoogle } = useAuth()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true)
+    try {
+      await GoogleSignin.hasPlayServices()
+      const userInfo = await GoogleSignin.signIn()
+      const idToken = userInfo.data?.idToken
+      if (!idToken) throw new Error('No se obtuvo el token de Google')
+      await signInWithGoogle(idToken)
+      router.replace('/(tabs)/journals')
+    } catch (err: any) {
+      if (err.code === statusCodes.SIGN_IN_CANCELLED) return
+      const message = err instanceof ApiClientError
+        ? err.message
+        : 'Error al iniciar sesión con Google'
+      Toast.show({ type: 'error', text1: 'Error', text2: message })
+    } finally {
+      setIsGoogleLoading(false)
+    }
+  }
 
   const { control, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -118,7 +140,9 @@ export default function LoginScreen() {
 
           <Button
             variant="outline"
-            onPress={() => Toast.show({ type: 'info', text1: 'Google Sign-In', text2: 'Próximamente disponible' })}
+            onPress={handleGoogleSignIn}
+            loading={isGoogleLoading}
+            disabled={isGoogleLoading || isLoading}
           >
             Continuar con Google
           </Button>

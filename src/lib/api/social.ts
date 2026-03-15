@@ -27,6 +27,13 @@ export async function addComment(token: string, journalId: number | string, text
   })
 }
 
+export async function deleteComment(token: string, commentId: number | string): Promise<void> {
+  return apiClient<void>(`/comments/${commentId}`, {
+    method: "DELETE",
+    token,
+  })
+}
+
 export async function followUser(token: string, userId: number | string): Promise<void> {
   return apiClient<void>(`/users/${userId}/follow`, {
     method: "POST",

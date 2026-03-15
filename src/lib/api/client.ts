@@ -1,6 +1,17 @@
 import Constants from 'expo-constants'
 import type { ApiError } from "@/types"
 
+// Global 401 handler — registered by AuthContext on mount
+let _unauthorizedCallback: (() => void) | null = null
+
+export function registerUnauthorizedCallback(cb: () => void) {
+  _unauthorizedCallback = cb
+}
+
+export function clearUnauthorizedCallback() {
+  _unauthorizedCallback = null
+}
+
 const API_BASE_URL =
   Constants.expoConfig?.extra?.apiBaseUrl ||
   process.env.EXPO_PUBLIC_API_BASE_URL ||
@@ -49,6 +60,10 @@ export async function apiClient<T>(
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config)
 
   if (!response.ok) {
+    if (response.status === 401) {
+      _unauthorizedCallback?.()
+    }
+
     let errorData: Partial<ApiError>
     try {
       errorData = await response.json()

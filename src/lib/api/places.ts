@@ -29,3 +29,15 @@ export async function removePlace(token: string, id: number | string): Promise<v
     token,
   })
 }
+
+export async function updatePlaceMarkerType(
+  token: string,
+  id: number | string,
+  markerType: MarkerType
+): Promise<MapPlace> {
+  return apiClient<MapPlace>(`/places/${id}/marker-type`, {
+    method: "PATCH",
+    body: { marker_type: markerType },
+    token,
+  })
+}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { useAuth } from "./use-auth"
-import { getPlaces, addPlace, removePlace } from "@/lib/api/places"
+import { getPlaces, addPlace, removePlace, updatePlaceMarkerType } from "@/lib/api/places"
 import type { MapPlace, MarkerType, LatLng } from "@/types"
 
 export function usePlaces() {
@@ -56,9 +56,23 @@ export function usePlaces() {
     }
   }, [accessToken])
 
+  const updateMarkerType = useCallback(async (
+    id: number | string,
+    markerType: MarkerType
+  ): Promise<MapPlace | null> => {
+    if (!accessToken) return null
+    try {
+      const updated = await updatePlaceMarkerType(accessToken, id, markerType)
+      setPlaces(prev => prev.map(p => p.id === id ? updated : p))
+      return updated
+    } catch {
+      return null
+    }
+  }, [accessToken])
+
   const visited = places.filter(p => p.markerType === "visited")
   const planned = places.filter(p => p.markerType === "planned")
   const wishlist = places.filter(p => p.markerType === "wishlist")
 
-  return { places, visited, planned, wishlist, isLoading, error, add, remove, refetch: fetchPlaces }
+  return { places, visited, planned, wishlist, isLoading, error, add, remove, updateMarkerType, refetch: fetchPlaces }
 }

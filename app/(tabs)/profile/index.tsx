@@ -40,13 +40,14 @@ export default function ProfileScreen() {
   const [refreshing, setRefreshing] = useState(false)
 
   const { profile, isLoading: profileLoading, refetch: refetchProfile } = useProfile()
-  const { journals, isLoading: journalsLoading, refetch: refetchJournals } = useJournals()
+  const { journals, meta: journalsMeta, isLoading: journalsLoading, refetch: refetchJournals } = useJournals()
   const { stats, isLoading: statsLoading } = useUserStats()
 
   useFocusEffect(
     useCallback(() => {
       refetchProfile()
-    }, [refetchProfile])
+      refetchJournals()
+    }, [refetchProfile, refetchJournals])
   )
 
   const handleRefresh = useCallback(async () => {
@@ -62,7 +63,7 @@ export default function ProfileScreen() {
   const displayAvatar = profile?.avatar ?? user?.avatar ?? null
   const displayCover = profile?.coverPhoto ?? user?.coverPhoto ?? null
   const displayLocation = profile?.location ?? user?.location ?? null
-  const journalCount = profile?.journalCount ?? 0
+  const journalCount = journalsMeta?.total ?? profile?.journalCount ?? 0
   const followersCount = profile?.followersCount ?? 0
   const followingCount = profile?.followingCount ?? 0
 

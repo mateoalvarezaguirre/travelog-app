@@ -79,7 +79,8 @@ export default function MapScreen() {
   const mapRef = useRef<MapView>(null)
   const placeDetailRef = useRef<BottomSheet>(null)
 
-  const { places, visited, planned, wishlist, isLoading, add } = usePlaces()
+  const { places, visited, planned, wishlist, isLoading, add, updateMarkerType } = usePlaces()
+  const [isUpdatingType, setIsUpdatingType] = useState(false)
 
   const [filter, setFilter] = useState<FilterKey>('all')
   const [selectedPlace, setSelectedPlace] = useState<MapPlace | null>(null)
@@ -93,7 +94,7 @@ export default function MapScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [selectedDate, setSelectedDate] = useState(new Date())
 
-  const snapPoints = useMemo(() => ['40%'], [])
+  const snapPoints = useMemo(() => ['50%'], [])
 
   const filteredPlaces = useMemo<MapPlace[]>(() => {
     switch (filter) {
@@ -369,6 +370,46 @@ export default function MapScreen() {
                     <Text style={styles.placeMeta}>{selectedPlace.journalCount} bitácoras</Text>
                   </View>
                 )}
+              </View>
+              <View>
+                <Text style={styles.formLabel}>Tipo de lugar</Text>
+                <View style={styles.typeRow}>
+                  {(Object.keys(MARKER_COLORS) as MarkerType[]).map(type => (
+                    <Pressable
+                      key={type}
+                      disabled={isUpdatingType}
+                      onPress={async () => {
+                        if (type === selectedPlace.markerType) return
+                        setIsUpdatingType(true)
+                        const updated = await updateMarkerType(selectedPlace.id, type)
+                        if (updated) {
+                          setSelectedPlace(updated)
+                          Toast.show({ type: 'success', text1: 'Tipo actualizado' })
+                        } else {
+                          Toast.show({ type: 'error', text1: 'Error al actualizar tipo' })
+                        }
+                        setIsUpdatingType(false)
+                      }}
+                      style={[
+                        styles.typeOption,
+                        { borderColor: MARKER_COLORS[type] },
+                        selectedPlace.markerType === type && { backgroundColor: MARKER_COLORS[type] },
+                        isUpdatingType && { opacity: 0.5 },
+                      ]}
+                    >
+                      <View style={[
+                        styles.typeDot,
+                        { backgroundColor: selectedPlace.markerType === type ? '#ffffff' : MARKER_COLORS[type] },
+                      ]} />
+                      <Text style={[
+                        styles.typeText,
+                        selectedPlace.markerType === type && styles.typeTextActive,
+                      ]}>
+                        {MARKER_LABELS[type]}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
               </View>
               <Button
                 variant="default"
